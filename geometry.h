@@ -107,6 +107,11 @@ template<size_t DIM,typename T,typename U> vec<DIM,T> operator*(vec<DIM,T> lhs, 
     return lhs;
 }
 
+template<size_t DIM,typename T,typename U> vec<DIM,T> operator*(const U& lhs, vec<DIM,T> rhs) {
+    for (size_t i=DIM; i--; rhs[i]*=lhs);
+    return rhs;
+}
+
 template<size_t DIM,typename T,typename U> vec<DIM,T> operator/(vec<DIM,T> lhs, const U& rhs) {
     for (size_t i=DIM; i--; lhs[i]/=rhs);
     return lhs;
@@ -228,6 +233,16 @@ public:
         T tmp = ret[0]*rows[0];
         return ret/tmp;
     }
+
+    mat<DimCols,DimRows,T> invert() {
+        return invert_transpose().transpose();
+    }
+
+    mat<DimCols,DimRows,T> transpose() {
+        mat<DimCols,DimRows,T> ret;
+        for (size_t i=DimRows; i--; ret[i]=this->col(i));
+        return ret;
+    }
 };
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -264,5 +279,19 @@ typedef vec<3,  int>   Vec3i;
 typedef vec<4,  float> Vec4f;
 typedef mat<4,4,float> Matrix;
 typedef mat<3,3,float> Mat3f;
+
+/////////////////////////////////////////////////////////////////////////////////
+
+inline Vec4f toVector4(Vec3f v) { return Vec4f(v.x, v.y, v.z, 1.f); }
+// Matrix vec2matrix(Vec3f v) {
+//     Matrix ret;
+//     ret[0][0] = v.x;
+//     ret[1][0] = v.y;
+//     ret[2][0] = v.z;
+//     return ret;
+// }
+
+// inline Vec3f matrix2vec(Matrix m) { return Vec3f(m[0][0]/m[3][0], m[1][0]/m[3][0], m[2][0]/m[3][0]); }
+
 #endif //__GEOMETRY_H__
 
