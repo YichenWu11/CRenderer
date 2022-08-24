@@ -7,6 +7,7 @@
 #include "model.h"
 
 const float depth = 2000.f;
+const TGAColor white = TGAColor(255, 255, 255, 255);
 
 void line(int x0, int y0, int x1, int y1, TGAImage &image, TGAColor color);
 
@@ -28,29 +29,62 @@ public:
     TGAImage image;
     TGAImage zbuffer;
     TGAImage depth;
+    int width;
+    int height;
+
+    int msaa_w = 2;
+    int msaa_h = 2;
 
     Matrix Affine;
     Matrix ModelView;
     Matrix Viewport;
     Matrix Projection;
 
-    rasterizer(int width, int height) : image(TGAImage(width, height, TGAImage::RGB)), 
-                                        zbuffer(TGAImage(width, height, TGAImage::GRAYSCALE)) {}
+    rasterizer(int w, int h) : 
+               image(TGAImage(w, h, TGAImage::RGB)), zbuffer(TGAImage(w, h, TGAImage::GRAYSCALE)), width(w), height(h) {}
 
     void viewport(int x, int y, int w, int h);
     void projection(float coeff=0.f); // coeff = -1/c
     void lookat(Vec3f eye, Vec3f center, Vec3f up);
     void set_model_matrix(float angle, float scale_cof = 1, Vec3f trans = Vec3f(0, 0, 0));
 
+    void do_affine_transform(float angle, Vec3f eye, Vec3f center, Vec3f up);
+    void do_affine_transform_shadow(float angle, Vec3f light_dir, Vec3f eye, Vec3f center, Vec3f up);
+
+    void draw_wire(Model *model); // 只render出三角线框
     void draw(Model *model, IShader &shader);
     void draw(Model *model, IShader &shader, float *shadowbuffer);
     void renderShadow();
+
+    void triangle(Vec4f *pts, IShader &shader, TGAImage &image, TGAImage &zbuffer);
+    void triangle_msaa(Vec4f *pts, IShader &shader, TGAImage &image, TGAImage &zbuffer);
+    void triangle(Vec4f *pts, IShader &shader, TGAImage &image, float *zbuffer);
 };
 
-void viewport(int x, int y, int w, int h);
-void projection(float coeff=0.f); // coeff = -1/c
-void lookat(Vec3f eye, Vec3f center, Vec3f up);
-void set_model_matrix(float angle, float scale_cof = 1, Vec3f trans = Vec3f(0, 0, 0));
+////////////////////////////////////////////////////////////////////////
+// Shader only rendering the triangle wire frame
+
+struct WireFrameShader : public IShader {
+    Model *model;
+
+    WireFrameShader(Model *m) : model(m) {}
+
+    virtual Vec4f vertex(int iface, int nthvert, Matrix m) {
+        Vec4f gl_Vertex = embed<4>(model->vert(iface, nthvert)); // read the vertex from .obj file
+        gl_Vertex = m * gl_Vertex;
+        return gl_Vertex;
+    }
+
+    virtual bool fragment(Vec3f bar, TGAColor &color) {
+        return false;
+    }
+};
+
+////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////
+// Gouraud Shading
 
 struct GouraudShader : public IShader {
     Model *model;
@@ -81,6 +115,11 @@ struct GouraudShader : public IShader {
     }
 };
 
+////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////
+
 struct Shader : public IShader {
     Model *model;
     std::vector<Light> lights;
@@ -106,6 +145,11 @@ struct Shader : public IShader {
         return false;                              // no, we do not discard this pixel
     }
 };
+
+////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////
 
 struct T_Shader : public IShader {
     Model *model;
@@ -143,6 +187,11 @@ struct T_Shader : public IShader {
     }
 };
 
+////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////
+
 struct DepthShader : public IShader {
     mat<3,3,float> varying_tri;
     Model *model;
@@ -162,6 +211,12 @@ struct DepthShader : public IShader {
         return false;
     }
 };
+
+////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////
+// Blinn_Phong Shading
 
 struct Blinn_Phong_Shader : public IShader {
     Model *model;
@@ -232,6 +287,11 @@ struct Blinn_Phong_Shader : public IShader {
     }
 };
 
+////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////
+
 struct dump_Shader : public IShader {
     Model *model;
     std::vector<Light> lights;
@@ -294,8 +354,12 @@ struct dump_Shader : public IShader {
         for (int i=0; i<3; i++) color[i] = std::min<float>(result_color[i]*255.f, 255);
         return false;
     }
-
 };
+
+////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////
 
 struct displacement_Shader : public IShader {
     Model *model;
@@ -382,8 +446,9 @@ struct displacement_Shader : public IShader {
     }
 };
 
-void triangle(Vec4f *pts, IShader &shader, TGAImage &image, TGAImage &zbuffer);
-void triangle(Vec4f *pts, IShader &shader, TGAImage &image, float *zbuffer);
+////////////////////////////////////////////////////////////////////////
+
+Vec3f barycentric(Vec2f A, Vec2f B, Vec2f C, Vec2f P);
 
 #endif //__OUR_GL_H__
 
