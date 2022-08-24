@@ -2,9 +2,9 @@
 #define __OUR_GL_H__
 
 #include <vector>
-#include "tgaimage.h"
-#include "geometry.h"
-#include "model.h"
+#include "./tgaimage.h"
+#include "./geometry.h"
+#include "./model.h"
 
 const float depth = 2000.f;
 const TGAColor white = TGAColor(255, 255, 255, 255);

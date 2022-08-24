@@ -1,7 +1,7 @@
 #include <cmath>
 #include <limits>
 #include <cstdlib>
-#include "our_gl.h"
+#include "./our_gl.h"
 
 IShader::~IShader() {}
 

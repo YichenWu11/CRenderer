@@ -2,10 +2,10 @@
 #include <iostream>
 #include <limits>
 
-#include "tgaimage.h"
-#include "model.h"
-#include "geometry.h"
-#include "our_gl.h"
+#include "core/tgaimage.h"
+#include "core/model.h"
+#include "core/geometry.h"
+#include "core/our_gl.h"
 
 const int width  = 800;
 const int height = 800;
