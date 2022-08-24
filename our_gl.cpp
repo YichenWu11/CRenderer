@@ -88,7 +88,7 @@ void rasterizer::lookat(Vec3f eye, Vec3f center, Vec3f up) {
 }
 
 void rasterizer::do_affine_transform(float angle, Vec3f eye, Vec3f center, Vec3f up) {
-    set_model_matrix(angle, 1.f, Vec3f(0.5f, 0, 0));
+    set_model_matrix(angle, 1.f, Vec3f(0.3f, 0.3f, 0));
     lookat(eye, center, up);
     projection(-1.f/(eye-center).norm());
     viewport(width/8, height/8, width*3/4, height*3/4);

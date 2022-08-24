@@ -262,6 +262,8 @@ struct Blinn_Phong_Shader : public IShader {
         // TGAColor c = TGAColor(120, 120, 120, 255);
         color = c;
 
+        // printf("(%d,%d,%d)\n",c[0],c[1],c[2]);
+
         Vec3f ka = Vec3f(0.005, 0.005, 0.005);
         Vec3f ks = Vec3f(0.7937, 0.7937, 0.7937);        
         Vec3f kd = Vec3f(c[0], c[1], c[2]);
