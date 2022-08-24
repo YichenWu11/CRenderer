@@ -17,7 +17,8 @@ Vec3f center(0, 0, 0.5);
 Vec3f up(0, 1, 0);
 
 int main(int argc, char** argv) {
-    model = new Model("../obj/spot/spot_triangulated_good.obj");
+    // model = new Model("../obj/spot/spot_triangulated_good.obj");
+    model = new Model("../obj/gun/Cerberus.obj");
 
     rasterizer r(width, height);
 

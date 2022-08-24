@@ -88,7 +88,7 @@ void rasterizer::lookat(Vec3f eye, Vec3f center, Vec3f up) {
 }
 
 void rasterizer::do_affine_transform(float angle, Vec3f eye, Vec3f center, Vec3f up) {
-    set_model_matrix(angle);
+    set_model_matrix(angle, 1.f, Vec3f(0.5f, 0, 0));
     lookat(eye, center, up);
     projection(-1.f/(eye-center).norm());
     viewport(width/8, height/8, width*3/4, height*3/4);
@@ -135,6 +135,7 @@ void rasterizer::draw(Model *model, IShader &shader) {
         for (int j=0; j<3; j++) {
             screen_coords[j] = shader.vertex(i, j, Viewport*Projection*ModelView*Affine);
         }
+        // std::cout << screen_coords[0] << "," << screen_coords[1] << "," << screen_coords[2] << std::endl;
         triangle_msaa(screen_coords, shader, image, zbuffer);
     }
 
