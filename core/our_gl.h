@@ -48,12 +48,15 @@ public:
     void lookat(Vec3f eye, Vec3f center, Vec3f up);
     void set_model_matrix(float angle, float scale_cof = 1, Vec3f trans = Vec3f(0, 0, 0));
 
-    void do_affine_transform(float angle, Vec3f eye, Vec3f center, Vec3f up);
+    void do_affine_transform(float angle, float scale, Vec3f trans, Vec3f eye, Vec3f center, Vec3f up);
     void do_affine_transform_shadow(float angle, Vec3f light_dir, Vec3f eye, Vec3f center, Vec3f up);
 
     void draw_wire(Model *model); // 只render出三角线框
     void draw(Model *model, IShader &shader);
     void draw(Model *model, IShader &shader, float *shadowbuffer);
+
+    void do_render();
+
     void renderShadow();
 
     void triangle(Vec4f *pts, IShader &shader, TGAImage &image, TGAImage &zbuffer);
@@ -269,21 +272,21 @@ struct Blinn_Phong_Shader : public IShader {
         Vec3f kd = Vec3f(c[0], c[1], c[2]);
 
         for (auto &light : lights) {  
-            Vec3f l = proj<3>(uniform_M  *embed<4>(light.light_dir)).normalize();
+            Vec3f l = proj<3>(uniform_M * embed<4>(light.light_dir)).normalize();
 
-            Vec3f r = (n*(n*l*2.f) - l).normalize();   // the direction of reflected light 
+            Vec3f r = (n * (n * l * 2.f) - l).normalize();   // the direction of reflected light 
 
             // float spec = pow(std::max(r.z, 0.0f), p);
             Vec3f specular = kd * pow(std::max(r.z, 0.0f), p);
             // float diff = std::max(0.f, n*l);
-            Vec3f diffuse = kd * std::max(0.f, n*l);
+            Vec3f diffuse = kd * std::max(0.f, n * l);
             // float ambient = 5;
             Vec3f ambient = cwiseProduct(ka, light.light_intensity);
             // result_color = result_color + ambient + 0.5*specular + diffuse;   
-            result_color = result_color + shadow * ambient + shadow * 0.5*specular + diffuse; // shadow mapping   
+            result_color = result_color + shadow * ambient + shadow * 0.5 * specular + diffuse; // shadow mapping   
         }
 
-        for (int i=0; i<3; i++) color[i] = std::min<float>(result_color[i], 255);
+        for (int i = 0; i < 3; ++i) color[i] = std::min<float>(result_color[i], 255);
 
         return false;
     }

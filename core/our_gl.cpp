@@ -43,6 +43,12 @@ void rasterizer::set_model_matrix(float angle, float scale_cof, Vec3f trans) {
         Vec4f(-sin(angle), 0, cos(angle), 0),  
         Vec4f(0, 0, 0, 1),
     };
+    // Matrix rotation = {
+    //     Vec4f(cos(angle), -sin(angle), 0, 0), 
+    //     Vec4f(sin(angle), cos(angle), 0, 0), 
+    //     Vec4f(0, 0, 1, 0),  
+    //     Vec4f(0, 0, 0, 1),
+    // };
     Matrix translate = {
         Vec4f(1, 0, 0, trans.x), 
         Vec4f(0, 1, 0, trans.y), 
@@ -87,8 +93,8 @@ void rasterizer::lookat(Vec3f eye, Vec3f center, Vec3f up) {
     }
 }
 
-void rasterizer::do_affine_transform(float angle, Vec3f eye, Vec3f center, Vec3f up) {
-    set_model_matrix(angle, 1.f, Vec3f(0.3f, 0.3f, 0));
+void rasterizer::do_affine_transform(float angle, float scale, Vec3f trans, Vec3f eye, Vec3f center, Vec3f up) {
+    set_model_matrix(angle, scale, trans);
     lookat(eye, center, up);
     projection(-1.f/(eye-center).norm());
     viewport(width/8, height/8, width*3/4, height*3/4);
@@ -121,11 +127,6 @@ void rasterizer::draw_wire(Model *model) {
             line(x0, y0, x1, y1, image, white);
         }
     }
-
-    image.flip_vertically();
-    image.write_tga_file("output.tga");
-    zbuffer.flip_vertically();
-    zbuffer.write_tga_file("zbuffer.tga");
 }
 
 // actual rendering
@@ -138,11 +139,6 @@ void rasterizer::draw(Model *model, IShader &shader) {
         // std::cout << screen_coords[0] << "," << screen_coords[1] << "," << screen_coords[2] << std::endl;
         triangle_msaa(screen_coords, shader, image, zbuffer);
     }
-
-    image.flip_vertically();
-    image.write_tga_file("output.tga");
-    zbuffer.flip_vertically();
-    zbuffer.write_tga_file("zbuffer.tga");
 }
 
 // render the shadow_mapping
@@ -157,6 +153,13 @@ void rasterizer::draw(Model *model, IShader &shader, float *shadowbuffer) {
 
     depth.flip_vertically(); // to place the origin in the bottom left corner of the image
     depth.write_tga_file("depth.tga");
+}
+
+void rasterizer::do_render() {
+    image.flip_vertically();
+    zbuffer.flip_vertically();
+    image.write_tga_file("output.tga");
+    zbuffer.write_tga_file("zbuffer.tga");
 }
 
 // void rasterizer::renderShadow() {
