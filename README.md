@@ -5,6 +5,7 @@
 <img src="./obj/spot/cow.png" width="40%" height="40%">
 
 #### Displacement
+<img src="./obj/spot/displacement_cow.png" width="40%" height="40%">
 
 ---
 
