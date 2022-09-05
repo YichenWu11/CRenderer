@@ -40,7 +40,7 @@ public:
     Matrix Viewport;
     Matrix Projection;
 
-    rasterizer(int w, int h) : 
+    rasterizer(int w = 800, int h = 800) : 
                image(TGAImage(w, h, TGAImage::RGB)), zbuffer(TGAImage(w, h, TGAImage::GRAYSCALE)), width(w), height(h) {}
 
     void viewport(int x, int y, int w, int h);
@@ -55,7 +55,7 @@ public:
     void draw(Model *model, IShader &shader);
     void draw(Model *model, IShader &shader, float *shadowbuffer);
 
-    void do_render();
+    void write_tga_file();
 
     void renderShadow();
 

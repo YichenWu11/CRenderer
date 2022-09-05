@@ -155,7 +155,7 @@ void rasterizer::draw(Model *model, IShader &shader, float *shadowbuffer) {
     depth.write_tga_file("depth.tga");
 }
 
-void rasterizer::do_render() {
+void rasterizer::write_tga_file() {
     image.flip_vertically();
     zbuffer.flip_vertically();
     image.write_tga_file("output.tga");

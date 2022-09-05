@@ -10,6 +10,7 @@
 /*
     qiyana -20.f Vec3f(0.2f, -0.5f, 0.2f)
     helmet -90.f Vec3f(0.3f, 0.3f, 0.f)
+    cow    -90.f Vec3f(0.f, 0.f, 0.f)
 */
 
 Vec3f eye(2, 1, 3);
@@ -26,7 +27,7 @@ void render_object(const char *filename, rasterizer r, std::vector<Light> l) {
     float *shadowbuffer   = new float[r.width*r.height];
     for (int i = r.width*r.height; --i; ) shadowbuffer[i] = -std::numeric_limits<float>::max();
 
-    r.do_affine_transform_shadow(-90.f, Vec3f(1,-1,-1).normalize(), eye, center, up);
+    r.do_affine_transform_shadow(-90.f, l[0].light_dir.normalize(), eye, center, up);
 
     DepthShader depthshader(model);
     r.draw(model, depthshader, shadowbuffer);
@@ -37,7 +38,7 @@ void render_object(const char *filename, rasterizer r, std::vector<Light> l) {
     ////////////////////////////////////////////////////////////////////////
     // rendering
 
-    r.do_affine_transform(-90.f, 1.f, Vec3f(0.3f, 0.3f, 0.f), eye, center, up);
+    r.do_affine_transform(-90.f, 1.f, Vec3f(0.f, 0.f, 0.f), eye, center, up);
 
     Matrix M = r.Viewport*r.Projection*r.ModelView*r.Affine;
     Matrix mat   =  r.Projection*r.ModelView*r.Affine;
@@ -46,12 +47,12 @@ void render_object(const char *filename, rasterizer r, std::vector<Light> l) {
 
     // dump_Shader shader(model, l, mat, mit);
     // T_Shader shader(model, l, mat, mit);
-    // displacement_Shader shader(model, l, mat, mit);
-    Blinn_Phong_Shader shader(model, l, shadowbuffer, mat, mit, mshadow);
+    displacement_Shader shader(model, l, mat, mit);
+    // Blinn_Phong_Shader shader(model, l, shadowbuffer, mat, mit, mshadow);
 
     r.draw(model, shader);
     // r.draw(model, shader);
-    r.do_render();
+    r.write_tga_file();
 
     ////////////////////////////////////////////////////////////////////////
 
@@ -64,6 +65,65 @@ void render_object(const char *filename, rasterizer r, std::vector<Light> l) {
     std::cout << "Done" << std::endl;
 
     ////////////////////////////////////////////////////////////////////////
+}
+
+void render_cow_with_helmet(rasterizer r, std::vector<Light> l) {
+    Model *cow = new Model("../obj/spot/spot_triangulated_good.obj");
+    Model *helmet = new Model("../obj/helmet/helmet.obj");
+
+    ////////////////////////////////////////////////////////////////////////
+    // rendering the shadow buffer
+
+    float *shadowbuffer   = new float[r.width*r.height];
+    for (int i = r.width*r.height; --i; ) shadowbuffer[i] = -std::numeric_limits<float>::max();
+
+    r.do_affine_transform_shadow(-90.f, l[0].light_dir.normalize(), eye, center, up);
+
+    DepthShader depthshader(cow);
+    r.draw(cow, depthshader, shadowbuffer);
+
+    ////////////////////////////////////////////////////////////////////////
+
+
+    ////////////////////////////////////////////////////////////////////////
+    // rendering
+
+    r.do_affine_transform(-90.f, 1.f, Vec3f(0.2f, 0.f, -0.2f), eye, center, up);
+
+    Matrix M = r.Viewport*r.Projection*r.ModelView*r.Affine;
+    Matrix mat   =  r.Projection*r.ModelView*r.Affine;
+    Matrix mit = (r.Projection*r.ModelView*r.Affine).invert_transpose();
+    Matrix mshadow = M*(r.Viewport*r.Projection*r.ModelView*r.Affine).invert();
+
+    // dump_Shader shader(model, l, mat, mit);
+    // T_Shader shader(model, l, mat, mit);
+    // displacement_Shader shader(model, l, mat, mit);
+    Blinn_Phong_Shader shader_cow(cow, l, shadowbuffer, mat, mit, mshadow);
+
+    r.draw(cow, shader_cow);
+
+    depthshader.model = helmet;
+    r.draw(helmet, depthshader, shadowbuffer);
+
+    Blinn_Phong_Shader shader_helmet(helmet, l, shadowbuffer, mat, mit, mshadow);
+
+    r.do_affine_transform(-100.f, 0.5f, Vec3f(0.7f, 0.57f, 0.f), eye, center, up);
+    r.draw(helmet, shader_helmet);
+
+    r.write_tga_file();
+
+    ////////////////////////////////////////////////////////////////////////
+
+
+    ////////////////////////////////////////////////////////////////////////
+    // gc
+
+    delete cow;
+    delete helmet;
+    delete [] shadowbuffer;
+    std::cout << "Done" << std::endl;
+
+    ////////////////////////////////////////////////////////////////////////    
 }
 
 
@@ -103,7 +163,7 @@ void render_qiyana(rasterizer r, std::vector<Light> l) {
     r.draw(model_body, shader_body);
     r.draw(model_face, shader_face);
     r.draw(model_hair, shader_hair);
-    r.do_render();
+    r.write_tga_file();
 
     ////////////////////////////////////////////////////////////////////////
 
