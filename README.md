@@ -1,19 +1,22 @@
 # CRenderer
 
 ## small cow
-![cow](./obj/spot/cow.png)
+#### Blinn_Phong
+<img src="./obj/spot/cow.png" width="40%" height="40%">
+
+#### Displacement
 
 ---
 
 ## gun
-![gun](./obj/gun/gun.png)
+<img src="./obj/gun/gun.png" width="40%" height="40%">
 
 ---
 
 ## helmet
-![helmet](./obj/helmet/helmet.png)
+<img src="./obj/helmet/helmet.png" width="40%" height="40%">
 
 ---
 
 ## qiyana (模型来自B站up主---神帝宇)
-![qiyana](./obj/qiyana/qiyana.png)
+<img src="./obj/qiyana/qiyana.png" width="40%" height="40%">
