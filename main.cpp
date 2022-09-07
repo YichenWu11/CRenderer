@@ -7,6 +7,7 @@
 #include "core/geometry.h"
 #include "core/our_gl.h"
 #include "core/render.h"
+#include "core/shaders.h"
 
 const int width  = 800;
 const int height = 800;
@@ -16,12 +17,12 @@ int main(int argc, char** argv) {
 
     ////////////////////////////////////////////////////////////////////////
     /* generate the light resourse
-        qiyana   {15,5,-1}
-        cow      {1,-1,-1}
-        helmet   {1,-1,-1}
+        qiyana   {-15,-5,1}
+        cow      {-2,1,2}
+        helmet   {-1,1,1}
     */
 
-    auto l1 = Light{{1,-1,-1},{500,500,500}};
+    auto l1 = Light{{-2,1,2},{500,500,500}};
     // auto l2 = Light{{-1,3,-2},{500,500,500}};
 
     std::vector<Light> l;

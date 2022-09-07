@@ -3,8 +3,6 @@
 #include <cstdlib>
 #include "./our_gl.h"
 
-IShader::~IShader() {}
-
 void line(int x0, int y0, int x1, int y1, TGAImage &image, TGAColor color) {
     bool steep = false;
     if (std::abs(x0-x1) < std::abs(y0-y1)) {
@@ -96,7 +94,7 @@ void rasterizer::lookat(Vec3f eye, Vec3f center, Vec3f up) {
 void rasterizer::do_affine_transform(float angle, float scale, Vec3f trans, Vec3f eye, Vec3f center, Vec3f up) {
     set_model_matrix(angle, scale, trans);
     lookat(eye, center, up);
-    projection(-1.f/(eye-center).norm());
+    projection(-1.f/(eye-center).norm());  // -1/d
     viewport(width/8, height/8, width*3/4, height*3/4);
 }
 

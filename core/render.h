@@ -47,8 +47,9 @@ void render_object(const char *filename, rasterizer r, std::vector<Light> l) {
 
     // dump_Shader shader(model, l, mat, mit);
     // T_Shader shader(model, l, mat, mit);
-    displacement_Shader shader(model, l, mat, mit);
+    // displacement_Shader shader(model, l, mat, mit);
     // Blinn_Phong_Shader shader(model, l, shadowbuffer, mat, mit, mshadow);
+    Toon_Shader shader(model, l ,mat, mit);
 
     r.draw(model, shader);
     // r.draw(model, shader);
