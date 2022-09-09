@@ -20,7 +20,7 @@ Vec3f up(0, 1, 0);
 const Vec3f Blue(150, 210, 255);
 const Vec3f White(255, 255, 255);
 const Vec3f Yellow(255, 235, 181);
-const Vec3f Light_Green(124, 252, 0);
+const Vec3f Light_Green(124, 150, 0);
 
 // render ordinary object
 void render_object(const char *filename, rasterizer r, std::vector<Light> l) {

@@ -2,7 +2,7 @@
 
 ## small cow
 #### Blinn_Phong
-<img src="./obj/spot/cow.png" width="40%" height="40%">
+<img src="./obj/spot/cow_green.png" width="40%" height="40%">
 
 #### Displacement
 <img src="./obj/spot/displacement_cow_blue.png" width="40%" height="40%">
