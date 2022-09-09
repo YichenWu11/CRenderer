@@ -132,6 +132,16 @@ void rasterizer::draw_wire(Model *model) {
     }
 }
 
+void rasterizer::draw_background(Vec3f color1, Vec3f color2) {
+    for (int i = 0; i < width; ++i) {
+        for (int j = 0; j < height; ++j) {
+            Vec3f c = (1 - float(j) / height) * color1 + (float(j) / height) * color2;
+            image.set(i, j, TGAColor(c[0], c[1], c[2], 255));
+        }
+    }
+}
+
+
 // actual rendering
 void rasterizer::draw(Model *model, IShader &shader) {
     for (int i=0; i<model->nfaces(); i++) {

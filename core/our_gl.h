@@ -37,6 +37,7 @@ public:
     void do_affine_transform(float angle, float scale, Vec3f trans, Vec3f eye, Vec3f center, Vec3f up);
     void do_affine_transform_shadow(float angle, Vec3f light_dir, Vec3f eye, Vec3f center, Vec3f up);
 
+    void draw_background(Vec3f color1, Vec3f color2);
     void draw_wire(Model *model); // 只render出三角线框
     void draw(Model *model, IShader &shader);
     void draw(Model *model, IShader &shader, float *shadowbuffer);
