@@ -112,12 +112,17 @@ void rasterizer::draw_wire(Model *model) {
         Vec3f(0, 1, 0), 
         Vec3f(-sin(angle), 0, cos(angle)),  
     };
+    Mat3f scale = {
+        Vec3f(0.8f, 0.f, 0.f),
+        Vec3f(0.f, 0.8f, 0.f),
+        Vec3f(0.f, 0.f, 0.8f),
+    };
 
     for (int i=0; i<model->nfaces(); i++) {
         std::vector<int> face = model->face(i);
         for (int j=0; j<3; j++) {
-            Vec3f v0 = rotation * model->vert(face[j]);
-            Vec3f v1 = rotation * model->vert(face[(j+1)%3]);
+            Vec3f v0 = scale * rotation * model->vert(face[j]);
+            Vec3f v1 = scale * rotation * model->vert(face[(j+1)%3]);
             int x0 = (v0.x+1.)*width/2.;
             int y0 = (v0.y+1.)*height/2.;
             int x1 = (v1.x+1.)*width/2.;

@@ -13,7 +13,7 @@
     cow    -90.f Vec3f(0.f, 0.f, 0.f)
 */
 
-Vec3f eye(2, 1, 3);
+Vec3f eye(2, 0, 3);
 Vec3f center(0, 0, 0.5);
 Vec3f up(0, 1, 0);
 
@@ -38,7 +38,7 @@ void render_object(const char *filename, rasterizer r, std::vector<Light> l) {
     ////////////////////////////////////////////////////////////////////////
     // rendering
 
-    r.do_affine_transform(-90.f, 1.f, Vec3f(0.f, 0.f, 0.f), eye, center, up);
+    r.do_affine_transform(-180.f, 0.8f, Vec3f(0.f, 0.f, 0.f), eye, center, up);
 
     Matrix M = r.Viewport*r.Projection*r.ModelView*r.Affine;
     Matrix mat   =  r.Projection*r.ModelView*r.Affine;
@@ -47,12 +47,12 @@ void render_object(const char *filename, rasterizer r, std::vector<Light> l) {
 
     // dump_Shader shader(model, l, mat, mit);
     // T_Shader shader(model, l, mat, mit);
-    // displacement_Shader shader(model, l, mat, mit);
+    displacement_Shader shader(model, l, mat, mit);
     // Blinn_Phong_Shader shader(model, l, shadowbuffer, mat, mit, mshadow);
-    Toon_Shader shader(model, l ,mat, mit);
+    // Toon_Shader shader(model, l ,mat, mit);
 
     r.draw(model, shader);
-    // r.draw(model, shader);
+    // r.draw_wire(model);
     r.write_tga_file();
 
     ////////////////////////////////////////////////////////////////////////

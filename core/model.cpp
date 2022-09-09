@@ -3,7 +3,9 @@
 #include <sstream>
 #include "./model.h"
 
-Model::Model(const char *filename) : verts_(), faces_(), norms_(), uv_(), diffusemap_(), normalmap_(), specularmap_() {
+Model::Model(const char *filename) : verts_(), faces_(), norms_(), uv_(), 
+                                     diffusemap_(), normalmap_(), specularmap_(), roughnessmap_(), 
+                                     metalnessmap_(), emissionmap_() {
     std::ifstream in;
     in.open (filename, std::ifstream::in);
     if (in.fail()) return;
@@ -40,9 +42,12 @@ Model::Model(const char *filename) : verts_(), faces_(), norms_(), uv_(), diffus
     }
     std::cerr << "# v# " << verts_.size() << " f# "  << faces_.size() << " vt# " << uv_.size() << " vn# " << norms_.size() << std::endl;
     // load_texture(filename, "_diffuse.tga", diffusemap_);
-    load_texture(filename, "_diffuse.tga", diffusemap_);
-    load_texture(filename, "_nm.tga",      normalmap_);
+    load_texture(filename, "_diffuse1.tga", diffusemap_);
+    load_texture(filename, "_nm.tga",        normalmap_);
     load_texture(filename, "_spec.tga",    specularmap_);
+    load_texture(filename, "_rough.tga",  roughnessmap_);
+    load_texture(filename, "_metal.tga",  metalnessmap_);
+    load_texture(filename, "_em.tga",   emissionmap_);
 }
 
 Model::~Model() {}
@@ -103,6 +108,16 @@ Vec2f Model::uv(int iface, int nthvert) {
 float Model::specular(Vec2f uvf) {
     Vec2i uv(uvf[0]*specularmap_.get_width(), uvf[1]*specularmap_.get_height());
     return specularmap_.get(uv[0], uv[1])[0]/1.f;
+}
+
+float Model::metalness(Vec2f uvf) {
+    Vec2i uv(uvf[0]*metalnessmap_.get_width(), uvf[1]*metalnessmap_.get_height());
+    return metalnessmap_.get(uv[0], uv[1])[0]/1.f;
+}
+
+float Model::roughness(Vec2f uvf) {
+    Vec2i uv(uvf[0]*roughnessmap_.get_width(), uvf[1]*roughnessmap_.get_height());
+    return roughnessmap_.get(uv[0], uv[1])[0]/1.f;
 }
 
 Vec3f Model::normal(int iface, int nthvert) {

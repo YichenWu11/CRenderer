@@ -18,11 +18,11 @@ int main(int argc, char** argv) {
     ////////////////////////////////////////////////////////////////////////
     /* generate the light resourse
         qiyana   {-15,-5,1}
-        cow      {-2,1,2}
+        cow      {-2,1,2}(-90.f) {2,-1,2}(90.f)
         helmet   {-1,1,1}
     */
 
-    auto l1 = Light{{-2,1,2},{500,500,500}};
+    auto l1 = Light{{2,-1,2},{500,500,500}};
     // auto l2 = Light{{-1,3,-2},{500,500,500}};
 
     std::vector<Light> l;

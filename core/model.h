@@ -16,6 +16,9 @@ public:
     TGAImage diffusemap_;
     TGAImage normalmap_;
     TGAImage specularmap_;
+    TGAImage roughnessmap_;
+    TGAImage metalnessmap_;
+    TGAImage emissionmap_;
     Model(const char *filename);
     ~Model();
     int nverts();
@@ -27,6 +30,8 @@ public:
     Vec2f uv(int iface, int nthvert);
     TGAColor diffuse(Vec2f uv);
     float specular(Vec2f uv);
+    float metalness(Vec2f uv);
+    float roughness(Vec2f uv);
     std::vector<int> face(int idx);
 
     // get_color

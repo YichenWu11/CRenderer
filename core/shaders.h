@@ -347,7 +347,7 @@ struct displacement_Shader : public IShader {
         Vec2f uv = varying_uv*bar;
         Vec3f point = world_pos*bar;
 
-        int p = 150;
+        int p = 80;
 
         Vec3f n = proj<3>(uniform_MIT*embed<4>(normal)).normalize();
 
@@ -391,7 +391,7 @@ struct displacement_Shader : public IShader {
             Vec3f ka = Vec3f(0.005, 0.005, 0.005);
             Vec3f ks = Vec3f(0.7937, 0.7937, 0.7937);        
             // Vec3f kd = Vec3f(c[0], c[1], c[2]);
-            Vec3f kd = Vec3f(230, 230, 230);
+            Vec3f kd = Vec3f(148, 120, 92);
 
             Vec3f specular = kd * pow(std::max(r.z, 0.0f), p);
 
