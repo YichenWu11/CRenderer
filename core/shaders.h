@@ -5,7 +5,6 @@
 #include "./tgaimage.h"
 #include "./geometry.h"
 #include "./model.h"
-// #include "./sample.h"
 
 const float depth = 2000.f;
 
@@ -13,11 +12,6 @@ struct Light {
     Vec3f light_dir;
     Vec3f light_intensity;
 };
-
-typedef struct cubemap 
-{
-	TGAImage faces[6];
-} cubemap_t;
 
 typedef struct iblmap 
 {
@@ -184,16 +178,13 @@ struct Toon_Shader : public IShader {
 
 ////////////////////////////////////////////////////////////////////////
 
-struct SkyBox_Shader {
+struct SkyBox_Shader : public IShader {
     Model *model;
-    cubemap_t env;
     Vec4f clip_coord[3];
     Vec3f world_coord[3];
     mat<3,3,float> world_pos;
-    mat<4,4,float> uniform_M;   //  Projection*ModelView
-    mat<4,4,float> uniform_MIT; // (Projection*ModelView).invert_transpose()
 
-    SkyBox_Shader() {}
+    SkyBox_Shader(Model *m) : model(m) {}
 
     virtual Vec4f vertex(int iface, int nthvert, Matrix m);
 

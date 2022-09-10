@@ -25,6 +25,7 @@ const Vec3f Light_Green(124, 150, 0);
 // render ordinary object
 void render_object(const char *filename, rasterizer r, std::vector<Light> l) {
     Model *model = new Model(filename);
+    Model *sky = new Model("../obj/skybox2/box.obj", 1);
 
     ////////////////////////////////////////////////////////////////////////
     // rendering the shadow buffer
@@ -43,7 +44,13 @@ void render_object(const char *filename, rasterizer r, std::vector<Light> l) {
     ////////////////////////////////////////////////////////////////////////
     // rendering
 
-    r.do_affine_transform(-180.f, 0.8f, Vec3f(0.f, 0.f, 0.f), eye, center, up);
+    // skybox
+    SkyBox_Shader shader_sky(sky);
+    r.do_affine_transform(38.f, 5.f, Vec3f(-2.4f, -0.14f, -3.f), eye, center, up);
+    r.draw(sky, shader_sky);
+    // skybox
+
+    r.do_affine_transform(-180.f, 0.8f, Vec3f(-0.2f, -0.35f, 0.f), eye, center, up);
 
     Matrix M = r.Viewport*r.Projection*r.ModelView*r.Affine;
     Matrix mat   =  r.Projection*r.ModelView*r.Affine;
@@ -57,10 +64,9 @@ void render_object(const char *filename, rasterizer r, std::vector<Light> l) {
     // Toon_Shader shader(model, l ,mat, mit);
 
     // render the background color
-    r.draw_background(Light_Green, White);
+    // r.draw_background(Light_Green, White);
 
     r.draw(model, shader);
-    // r.draw(model, shader2);
     // r.draw_wire(model);
     r.write_tga_file();
 

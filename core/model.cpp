@@ -3,7 +3,7 @@
 #include <sstream>
 #include "./model.h"
 
-Model::Model(const char *filename) : verts_(), faces_(), norms_(), uv_(), 
+Model::Model(const char *filename, int is_sky) : verts_(), faces_(), norms_(), uv_(), is_skybox(is_sky),
                                      diffusemap_(), normalmap_(), specularmap_(), roughnessmap_(), 
                                      metalnessmap_(), emissionmap_() {
     std::ifstream in;
@@ -48,9 +48,34 @@ Model::Model(const char *filename) : verts_(), faces_(), norms_(), uv_(),
     load_texture(filename, "_rough.tga",  roughnessmap_);
     load_texture(filename, "_metal.tga",  metalnessmap_);
     load_texture(filename, "_em.tga",   emissionmap_);
+
+    environment_map = nullptr;
+	if (is_skybox)
+	{
+		environment_map = new cubemap_t();
+		load_cubemap(filename);
+	}
 }
 
-Model::~Model() {}
+void Model::load_cubemap(const char *filename)
+{
+	environment_map->faces[0] = TGAImage();
+	load_texture(filename, "_right.tga", environment_map->faces[0]);
+	environment_map->faces[1] = TGAImage();
+	load_texture(filename, "_left.tga", environment_map->faces[1]);
+	environment_map->faces[2] = TGAImage();
+	load_texture(filename, "_top.tga", environment_map->faces[2]);
+	environment_map->faces[3] = TGAImage();
+	load_texture(filename, "_bottom.tga", environment_map->faces[3]);
+	environment_map->faces[4] = TGAImage();
+	load_texture(filename, "_back.tga", environment_map->faces[4]);
+	environment_map->faces[5] = TGAImage();
+	load_texture(filename, "_front.tga", environment_map->faces[5]);
+}
+
+Model::~Model() {
+    if (environment_map) delete environment_map;
+}
 
 int Model::nverts() {
     return (int)verts_.size();

@@ -296,24 +296,26 @@ bool Toon_Shader::fragment(Vec3f bar, TGAColor &color) {
 
 ////////////////////////////////////////////////////////////////////////
 
-// Vec4f SkyBox_Shader::vertex(int iface, int nthvert, Matrix m) {
-//     world_coord[nthvert] = model->vert(iface, nthvert);
-//     world_pos.set_col(nthvert,embed<3>(model->vert(iface, nthvert)));
-//     Vec4f gl_Vertex = embed<4>(model->vert(iface, nthvert)); // read the vertex from .obj file
-//     clip_coord[nthvert] = m*gl_Vertex;
-//     return m*gl_Vertex; // transform it to screen coordinates
-// }
+Vec4f SkyBox_Shader::vertex(int iface, int nthvert, Matrix m) {
+    world_coord[nthvert] = model->vert(iface, nthvert);
+    world_pos.set_col(nthvert,embed<3>(model->vert(iface, nthvert)));
+    Vec4f gl_Vertex = embed<4>(model->vert(iface, nthvert)); // read the vertex from .obj file
+    clip_coord[nthvert] = m*gl_Vertex;
+    return m*gl_Vertex; // transform it to screen coordinates
+}
 
-// bool SkyBox_Shader::fragment(Vec3f bar, TGAColor &color) {
-//     Vec3f point = world_pos*bar;
+bool SkyBox_Shader::fragment(Vec3f bar, TGAColor &color) {
+    Vec3f point = world_pos*bar;
 
-//     float Z = 1.0 / (bar[0]/clip_coord[0].w + bar[1]/clip_coord[1].w + bar[2]/clip_coord[2].w);
-//     Vec3f w_pos = (bar[0]*world_coord[0]/clip_coord[0].w + bar[1]*world_coord[1]/clip_coord[1].w +
-//         bar[2]*world_coord[2]/clip_coord[2].w) * Z;
+    float Z = 1.0 / (bar[0]/clip_coord[0].w + bar[1]/clip_coord[1].w + bar[2]/clip_coord[2].w);
+    Vec3f w_pos = (bar[0]*world_coord[0]/clip_coord[0].w + bar[1]*world_coord[1]/clip_coord[1].w +
+        bar[2]*world_coord[2]/clip_coord[2].w) * Z;
 
-//     // Vec3f result_color = cubemap_sampling(w_pos, model->environment_map);
+    Vec3f result_color = cubemap_sampling(w_pos, model->environment_map);
 
-//     for (int i = 0; i < 3; ++i) color[i] = 0;
-// }
+    for (int i = 0; i < 3; ++i) color[i] = result_color[i];
+
+    return false;
+}
 
 ////////////////////////////////////////////////////////////////////////
