@@ -103,7 +103,7 @@ bool Blinn_Phong_Shader::fragment(Vec3f bar, TGAColor &color) {
     Vec3f kd = Vec3f(c[0], c[1], c[2]);
 
     for (auto &light : lights) {  
-        Vec3f l = proj<3>(uniform_M * embed<4>(point-light.light_dir)).normalize();
+        Vec3f l = proj<3>(uniform_M * embed<4>(-light.light_dir)).normalize();
 
         Vec3f r = (n * (n * l * 2.f) - l).normalize();   // the direction of reflected light 
 

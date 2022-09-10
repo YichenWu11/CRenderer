@@ -27,7 +27,8 @@ public:
     Matrix Projection;
 
     rasterizer(int w = 800, int h = 800) : 
-               image(TGAImage(w, h, TGAImage::RGB)), zbuffer(TGAImage(w, h, TGAImage::GRAYSCALE)), width(w), height(h) {}
+               image(TGAImage(w, h, TGAImage::RGB)), zbuffer(TGAImage(w, h, TGAImage::RGB)), 
+               depth(TGAImage(w, h, TGAImage::RGB)), width(w), height(h) {}
 
     void viewport(int x, int y, int w, int h);
     void projection(float coeff=0.f); // coeff = -1/c

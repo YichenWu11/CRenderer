@@ -28,7 +28,7 @@ void render_object(const char *filename, rasterizer r, std::vector<Light> l) {
     Model *sky = new Model("../obj/skybox2/box.obj", 1);
 
     ////////////////////////////////////////////////////////////////////////
-    // rendering the shadow buffer
+    // rendering the shadow buffer (discard)
 
     float *shadowbuffer   = new float[r.width*r.height];
     for (int i = r.width*r.height; --i; ) shadowbuffer[i] = -std::numeric_limits<float>::max();
