@@ -241,8 +241,8 @@ void rasterizer::triangle_msaa(Vec4f *pts, IShader &shader, TGAImage &image, TGA
             if (c.x<0 || c.y<0 || c.z<0 || zbuffer.get(P.x, P.y)[0]>frag_depth) continue;
             bool discard = shader.fragment(c, color);
             if (!discard) {
-                // printf("(%d,%d,%d,%d)\n",color[0],color[1],color[2],color[3]);
                 TGAColor act_color = color * count;
+                // printf("(%d,%d,%d,%d)\n",act_color[0],act_color[1],act_color[2],act_color[3]);
                 zbuffer.set(P.x, P.y, TGAColor(frag_depth));
                 image.set(P.x, P.y, act_color);
             }
@@ -279,6 +279,44 @@ void rasterizer::triangle(Vec4f *pts, IShader &shader, TGAImage &image, float *s
     }
 }
 
+void rasterizer::do_color_grading() {
+    Vec2f lut_tex_size(256, 16);
+
+    darkness = 0.8;
+
+    float block_num = 16;
+
+    for (int i = 0; i < width; ++i) {
+        for (int j = 0; j < height; ++j) {
+            TGAColor _c = image.get(i, j);
+            Vec3f c = Vec3f(_c[0], _c[1], _c[2]) / 255.f;
+
+            float indexL = floor(c.z * block_num);
+            float indexR = ceil(c.z * block_num);
+
+            float L_x = (indexL * lut_tex_size.y + c.x * lut_tex_size.y) / lut_tex_size.x;
+            float R_x = (indexR * lut_tex_size.y + c.x * lut_tex_size.y) / lut_tex_size.x;
+
+            float y = c.y;
+
+            Vec2f lutCoordL = Vec2f(L_x, y);
+            Vec2f lutCoordR = Vec2f(R_x, y);
+
+            float weight = fract(c.y * lut_tex_size.y);
+            TGAColor _c1 = colorgradingmap_.get(L_x, y);
+            TGAColor _c2 = colorgradingmap_.get(R_x, y);
+            Vec3f c1 = Vec3f(_c1[0], _c1[1], _c1[2]) / 255.f;
+            Vec3f c2 = Vec3f(_c2[0], _c2[1], _c2[2]) / 255.f;
+
+            Vec3f _cur_c = (1-weight)*c1 + weight*c2;
+            Vec3f cur_c = cwiseProduct(_cur_c, c) * 255.f * 2.6f;
+
+            image.set(i, j, TGAColor(cur_c.x, cur_c.y, cur_c.z, 0));
+        }
+    }
+
+}
+
 ///////////////////////////////////////////////////////
 
 
@@ -294,4 +332,8 @@ Vec3f barycentric(Vec2f A, Vec2f B, Vec2f C, Vec2f P) {
     if (std::abs(u[2])>1e-2) // dont forget that u[2] is integer. If it is zero then triangle ABC is degenerate
         return Vec3f(1.f-(u.x+u.y)/u.z, u.y/u.z, u.x/u.z);
     return Vec3f(-1,1,1); // in this case generate negative coordinates, it will be thrown away by the rasterizator
+}
+
+inline float fract(float i) {
+    return fabs(i - floor(i));
 }

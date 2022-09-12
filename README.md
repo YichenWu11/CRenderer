@@ -6,6 +6,12 @@
 
 <br/>
 
+#### With ColorGrading
+
+<img src="./obj/spot/cow_cg.png" width="40%" height="40%">
+
+<br/>
+
 <img src="./obj/spot/cow_green.png" width="40%" height="40%">
 
 #### Displacement

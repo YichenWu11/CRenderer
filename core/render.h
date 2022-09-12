@@ -67,7 +67,10 @@ void render_object(const char *filename, rasterizer r, std::vector<Light> l) {
     // r.draw_background(Light_Green, White);
 
     r.draw(model, shader);
+    // r.do_color_grading();
     // r.draw_wire(model);
+
+
     r.write_tga_file();
 
     ////////////////////////////////////////////////////////////////////////

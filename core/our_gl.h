@@ -15,11 +15,13 @@ public:
     TGAImage image;
     TGAImage zbuffer;
     TGAImage depth;
+    TGAImage colorgradingmap_;
     int width;
     int height;
 
     int msaa_w = 2;
     int msaa_h = 2;
+    float darkness;
 
     Matrix Affine;
     Matrix ModelView;
@@ -28,7 +30,11 @@ public:
 
     rasterizer(int w = 800, int h = 800) : 
                image(TGAImage(w, h, TGAImage::RGB)), zbuffer(TGAImage(w, h, TGAImage::RGB)), 
-               depth(TGAImage(w, h, TGAImage::RGB)), width(w), height(h) {}
+               depth(TGAImage(w, h, TGAImage::RGB)), width(w), height(h) {
+                    colorgradingmap_ = TGAImage();
+                    colorgradingmap_.read_tga_file("../obj/lut/color_grading_lut_01.tga");
+                    darkness = 1.f;
+               }
 
     void viewport(int x, int y, int w, int h);
     void projection(float coeff=0.f); // coeff = -1/c
@@ -43,6 +49,8 @@ public:
     void draw(Model *model, IShader &shader);
     void draw(Model *model, IShader &shader, float *shadowbuffer);
 
+    void do_color_grading();
+
     void write_tga_file();
 
     void renderShadow();
@@ -55,6 +63,8 @@ public:
 ////////////////////////////////////////////////////////////////////////
 
 Vec3f barycentric(Vec2f A, Vec2f B, Vec2f C, Vec2f P);
+
+float fract(float);
 
 #endif //__OUR_GL_H__
 
