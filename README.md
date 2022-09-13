@@ -2,13 +2,13 @@
 
 ## small cow
 #### Blinn_Phong
-<img src="./obj/spot/cow_backcolor.png" width="40%" height="40%">
+<img src="./obj/spot/cow_backcolor_gui.png" width="40%" height="40%">
 
 <br/>
 
 #### With ColorGrading
 
-<img src="./obj/spot/cow_cg.png" width="40%" height="40%">
+<img src="./obj/spot/cow_cg_gui.png" width="40%" height="40%">
 
 <br/>
 

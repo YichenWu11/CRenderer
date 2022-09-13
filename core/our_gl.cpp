@@ -311,7 +311,7 @@ void rasterizer::do_color_grading() {
             Vec3f _cur_c = (1-weight)*c1 + weight*c2;
             Vec3f cur_c = cwiseProduct(_cur_c, c) * 255.f * 2.6f;
 
-            image.set(i, j, TGAColor(cur_c.x, cur_c.y, cur_c.z, 0));
+            image.set(i, j, TGAColor(cur_c.z, cur_c.y, cur_c.x, 0));
         }
     }
 

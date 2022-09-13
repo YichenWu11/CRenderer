@@ -43,7 +43,7 @@ bool TGAImage::read_tga_file(const char *filename) {
     std::ifstream in;
     in.open (filename, std::ios::binary);
     if (!in.is_open()) {
-        std::cerr << "can't open file " << filename << "\n";
+        //std::cerr << "can't open file " << filename << "\n";
         in.close();
         return false;
     }

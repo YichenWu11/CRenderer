@@ -4,6 +4,8 @@
 #include <vector>
 #include "./shaders.h"
 
+const float M_PI = 3.1415926f;
+
 const TGAColor white = TGAColor(255, 255, 255, 255);
 
 void line(int x0, int y0, int x1, int y1, TGAImage &image, TGAColor color);
